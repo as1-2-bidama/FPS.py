@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 import math
 
-def main():
+def main(): #main
     Green = (0,255,0)
     Red = (255,0,0)
     Blue = (0,0,255)
@@ -26,16 +26,16 @@ def main():
         # イベント処理
 
 
-def Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle):
+def Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle): #描画の処理
     col_list = [Black,Blue,Red,Green,yellow]
     ver = ""
     angle_list = [-0.52,-0.48,-0.44,-0.40,-0.36,-0.32,-0.28,-0.24,-0.20,-0.16,-0.12,-0.08,-0.04,0,0.04,0.08,0.12,0.16,0.20,0.24,0.28,0.32,0.36,0.40,0.44,0.48,0.52]
     woll_list = [[(80,80),(240,80)],[(240,80),(160,240)],[(160,240),(80,80)],[(300,300),(100,300)]]
-    for i in range(len(woll_list)):
+    for i in range(len(woll_list)): #壁の線分を描写
         pygame.draw.aaline(screen, col_list[i], woll_list[i][0], woll_list[i][1], 10)   # 直線の描画
         ver = Intersection_Vertical(player_angle,mouse,woll_list,i,ver)
 
-    for woll_num in range(len(woll_list)):
+    for woll_num in range(len(woll_list)): #視点の線分と交点、3Dviewを描写
         for angle in angle_list:
             player_dir,hitpos = Keisan(player_angle,mouse,angle,woll_list,woll_num)
             pygame.draw.line(screen, yellow, (mouse.x,mouse.y), (player_dir.x,player_dir.y))
@@ -53,7 +53,7 @@ def Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle):
     pygame.draw.circle(screen, Black, (mouse.x,mouse.y), 10)
     pygame.display.update()                                 # 画面を更新
         
-def Imput(mouse,player_angle):
+def Imput(mouse,player_angle): #入力の処理
     for event in pygame.event.get():
         if event.type == QUIT:                              # 閉じるボタンが押されたら終了
             pygame.quit()                                   # Pygameの終了(画面閉じられる)
@@ -70,12 +70,12 @@ def Imput(mouse,player_angle):
         sys.exit()
     return player_angle
 
-def Keisan(player_angle,mouse,angle,woll_list,woll_num):
+def Keisan(player_angle,mouse,angle,woll_list,woll_num): #視線のベクトルを計算
     player_dir = pygame.math.Vector2(math.cos(player_angle+angle)*50+mouse.x,math.sin(player_angle+angle)*50+mouse.y)
     hitpos = Intersection(mouse,player_dir,woll_list,woll_num)
     return player_dir,hitpos
 
-def Intersection(mouse,player_dir,woll_list,woll_num):
+def Intersection(mouse,player_dir,woll_list,woll_num): #視線の線分と壁の線分の交点を計算
     r1_way = player_dir
     r1_pos = mouse
     r2_way = woll_list[woll_num][1]
@@ -107,7 +107,7 @@ def Intersection(mouse,player_dir,woll_list,woll_num):
         else:
             return None
 
-def Intersection_Vertical(player_angle,mouse,woll_list,i,ver):
+def Intersection_Vertical(player_angle,mouse,woll_list,i,ver): #視線のアングル０と壁の垂直を計算
     r1_way = pygame.math.Vector2(math.cos(player_angle)*50+mouse.x,math.sin(player_angle)*50+mouse.y)
     r1_pos = mouse
     r2_way = woll_list[i][1]
@@ -126,7 +126,7 @@ def Intersection_Vertical(player_angle,mouse,woll_list,i,ver):
         ver = False
     return ver
     
-def TDview(mouse,hitpos):
+def TDview(mouse,hitpos): #自機と壁との距離を計算
     a = math.sqrt((hitpos.x - mouse.x)**2 + (hitpos.y - mouse.y)**2)
     print(a)
     return a
