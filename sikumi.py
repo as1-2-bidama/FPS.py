@@ -4,6 +4,8 @@ from pygame.locals import *
 import math
 
 def main(): #main
+    screen_height = 640
+    screen_width = 1000
     Green = (0,255,0)
     Red = (255,0,0)
     Blue = (0,0,255)
@@ -11,13 +13,14 @@ def main(): #main
     White = (255,255,255)
     yellow = (255,0,255)
     pygame.init()
-    screen = pygame.display.set_mode((1000, 640))                # 大きさ600*500の画面を生成
+    screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("GAME")                          # タイトルバーに表示する文字
     mouse = pygame.math.Vector2(150,150)
     player_angle = 0
     player_dir = pygame.math.Vector2(50,-75)
     clock = pygame.time.Clock()
     while (1):
+        pygame.mouse.set_pos([screen_width/2,screen_height/2])
         clock.tick(60)
         screen.fill(White)                                    # 画面を白色に塗りつぶし
         player_angle = Imput(mouse,player_angle)
@@ -58,8 +61,11 @@ def Imput(mouse,player_angle): #入力の処理
         if event.type == QUIT:                              # 閉じるボタンが押されたら終了
             pygame.quit()                                   # Pygameの終了(画面閉じられる)
             sys.exit()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse.x,mouse.y = pygame.mouse.get_pos()
+    mouse_move = pygame.mouse.get_rel()
+    if mouse_move[0] < 0:
+        player_angle -= 0.05
+    elif mouse_move[0] > 0:
+        player_angle += 0.05
     key_pressed = pygame.key.get_pressed()
     if key_pressed[pygame.K_RIGHT]:
         player_angle += 0.1
