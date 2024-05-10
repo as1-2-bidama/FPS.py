@@ -19,41 +19,42 @@ def main(): #main
     player_angle = 0
     player_dir = pygame.math.Vector2(50,-75)
     clock = pygame.time.Clock()
+    pygame.mouse.set_visible(False)
     while (1):
         pygame.mouse.set_pos([screen_width/2,screen_height/2])
         clock.tick(60)
         screen.fill(White)                                    # 画面を白色に塗りつぶし
         player_angle = Imput(mouse,player_angle)
-        Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle)
+        Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle,screen_width,screen_height)
 
         # イベント処理
 
 
-def Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle): #描画の処理
+def Draw(screen,Blue,Red,Green,Black,yellow,mouse,player_dir,player_angle,screen_width,screen_height): #描画の処理
     col_list = [Black,Blue,Red,Green,yellow]
     ver = ""
     angle_list = [-0.52,-0.48,-0.44,-0.40,-0.36,-0.32,-0.28,-0.24,-0.20,-0.16,-0.12,-0.08,-0.04,0,0.04,0.08,0.12,0.16,0.20,0.24,0.28,0.32,0.36,0.40,0.44,0.48,0.52]
     woll_list = [[(80,80),(240,80)],[(240,80),(160,240)],[(160,240),(80,80)],[(300,300),(100,300)]]
     for i in range(len(woll_list)): #壁の線分を描写
-        pygame.draw.aaline(screen, Black, woll_list[i][0], woll_list[i][1], 10)   # 直線の描画
+        # pygame.draw.aaline(screen, Black, woll_list[i][0], woll_list[i][1], 10)   # 直線の描画
         ver = Intersection_Vertical(player_angle,mouse,woll_list,i,ver)
 
     for woll_num in range(len(woll_list)): #視点の線分と交点、3Dviewを描写
         for angle in angle_list:
             player_dir,hitpos = Keisan(player_angle,mouse,angle,woll_list,woll_num)
-            pygame.draw.line(screen, yellow, (mouse.x,mouse.y), (player_dir.x,player_dir.y))
+            # pygame.draw.line(screen, yellow, (mouse.x,mouse.y), (player_dir.x,player_dir.y))
             if hitpos != None:
 
-                    pygame.draw.circle(screen, yellow, (hitpos.x,hitpos.y),5)
+                    # pygame.draw.circle(screen, yellow, (hitpos.x,hitpos.y),5)
                     if ver == True:
                         angle = 0
                         player_dir,hitpos = Keisan(player_angle,mouse,angle,woll_list,woll_num)
                         long = TDview()
                     else:
                         long = TDview(mouse,hitpos)
-                    pygame.draw.line(screen, Black, (600 + (10 * angle_list.index(angle)),300), (600 + (10 * angle_list.index(angle)),300-(50/long)*20),5)
-                    pygame.draw.line(screen, Black, (600 + (10 * angle_list.index(angle)),300), (600 + (10 * angle_list.index(angle)),300+(50/long)*20),5)
-    pygame.draw.circle(screen, Black, (mouse.x,mouse.y), 10)
+                    pygame.draw.line(screen, Black, (((screen_width/len(angle_list)) * angle_list.index(angle)),300), (((screen_width/len(angle_list)) * angle_list.index(angle)),230-(50/long)*40),int((screen_width/len(angle_list))))
+                    pygame.draw.line(screen, Black, (((screen_width/len(angle_list)) * angle_list.index(angle)),300), (((screen_width/len(angle_list)) * angle_list.index(angle)),370+(50/long)*40),int((screen_width/len(angle_list))))
+    # pygame.draw.circle(screen, Black, (mouse.x,mouse.y), 10)
     pygame.display.update()                                 # 画面を更新
         
 def Imput(mouse,player_angle): #入力の処理
@@ -74,9 +75,9 @@ def Imput(mouse,player_angle): #入力の処理
     if key_pressed[pygame.K_ESCAPE]:
         pygame.quit()
         sys.exit()
-    if key_pressed[pygame.K_a]:
-        mouse.x,mouse.y = pygame.math.Vector2(math.cos(player_angle+1.6)+mouse.x,math.sin(player_angle+1.6)+mouse.y)
     if key_pressed[pygame.K_d]:
+        mouse.x,mouse.y = pygame.math.Vector2(math.cos(player_angle+1.6)+mouse.x,math.sin(player_angle+1.6)+mouse.y)
+    if key_pressed[pygame.K_a]:
         mouse.x,mouse.y = pygame.math.Vector2(math.cos(player_angle+1.6)*-1+mouse.x,math.sin(player_angle+1.6)*-1+mouse.y)
     if key_pressed[pygame.K_w]:
         mouse.x,mouse.y = pygame.math.Vector2(math.cos(player_angle)*2+mouse.x,math.sin(player_angle)*2+mouse.y)
