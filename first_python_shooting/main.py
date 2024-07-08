@@ -10,12 +10,7 @@ clock = pygame.time.Clock()
 run = True
 while run == True:
     clock.tick(fps)
-    game.run()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                run = False
+    run = game.run()
     pygame.display.update()
 pygame.quit()
+#マウスクリックでフリーズ
