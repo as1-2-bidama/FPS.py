@@ -27,5 +27,4 @@ class Input:
             self.mouse_dir += mouse_move[0]/500
         elif mouse_move[0] > 0:
             self.mouse_dir += mouse_move[0]/500
-        print(self.mouse_dir)
         return self.mouse_dir

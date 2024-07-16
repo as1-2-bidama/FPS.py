@@ -15,7 +15,7 @@ class Root:
         self.run_bool,key = self.input.input_key(self.run_bool)
         mouse_dir = self.input.input_mouse()
         player_pos = self.calculation.move(key,mouse_dir)
-        vision_woll = None #self.calculation.vision(mouse_dir)
-        self.draw.draw(vision_woll,player_pos,mouse_dir)
+        vision_woll = self.calculation.vision(mouse_dir)
+        self.draw.draw(vision_woll,player_pos,mouse_dir,mouse_dir)
         pygame.mouse.set_pos([screen[0]/2,screen[1]/2])
         return self.run_bool

@@ -1,30 +1,34 @@
 import pygame
 import math
+import copy
 from setting import *
 
 class Calculation:
-    def __init__(self):
-        self.player_pos = pygame.math.Vector2(0,0)
+    def __init__(self):        
+        self.vision_woll_ = []
+        for i in range(len(angle_list)):
+            self.vision_woll_.append([None])
+        self.player_pos = pygame.math.Vector2(150,150)
         self.before_pos = self.player_pos
-        self.player_dir = pygame.math.Vector2(50,-75)
-        self.vision_woll = []
     def vision(self,angle):
-        self.vision_woll = []
-        # if angle == "r":
-        #     angle += 0.1
-        # elif angle == "l":
-        #     angle -= 0.1
-        for woll_num in range(len(woll_list)): #視点の線分と交点、3Dviewを描写
-            for angle in angle_list:
-                self.player_dir = pygame.math.Vector2(math.cos(angle+angle)*50+self.player_pos.x,math.sin(angle+angle)*50+self.player_pos.y)
-                # print(self.player_dir)
+        vision_woll = copy.deepcopy(self.vision_woll_)
+        for look_angle in angle_list: #視点の線分と交点、3Dviewを描写
+            for woll_num in range(len(woll_list)):
+                self.player_dir = pygame.math.Vector2(math.cos(angle+look_angle)*50+self.player_pos.x,math.sin(angle+look_angle)*50+self.player_pos.y)
                 hitpos = self.intersection(woll_num,"vision")
-                if type(hitpos) == tuple:
+                if hitpos != None:
                     long = self.measure_long(hitpos)
-                    self.vision_woll.append([hitpos,long])
-                elif hitpos == True:
-                    self.vision_woll.append([hitpos])
-        return self.vision_woll
+                    if vision_woll[angle_list.index(look_angle)][0] != None:
+                        if vision_woll[angle_list.index(look_angle)][1] > long:
+                            vision_woll[angle_list.index(look_angle)] = [1,long]
+                    else:
+                        vision_woll[angle_list.index(look_angle)] = [1,long]
+            if vision_woll[angle_list.index(look_angle)][0] == None:
+                if angle_list.index(look_angle) == 0:
+                    vision_woll[angle_list.index(look_angle)] = [None,50]
+                else:
+                    vision_woll[angle_list.index(look_angle)] = [None,vision_woll[angle_list.index(look_angle) - 1][1]]
+        return vision_woll
     def move(self,key,angle):
         self.before_pos = self.player_pos
         if "d" in key:
@@ -32,19 +36,20 @@ class Calculation:
         if "a" in key:
             self.player_pos = pygame.math.Vector2(math.cos(angle+1.6)*-1+self.player_pos.x,math.sin(angle+1.6)*-1+self.player_pos.y)
         if "w" in key:
-            self.player_pos = pygame.math.Vector2(math.cos(angle)*2+self.player_pos.x,math.sin(angle)*2+self.player_pos.y)
+            self.player_pos = pygame.math.Vector2(math.cos(angle)*1+self.player_pos.x,math.sin(angle)*1+self.player_pos.y)
         if "s" in key:
-            self.player_pos = pygame.math.Vector2(math.cos(angle)*-2+self.player_pos.x,math.sin(angle)*-2+self.player_pos.y)
-        # print(self.player_pos)
+            self.player_pos = pygame.math.Vector2(math.cos(angle)*-1+self.player_pos.x,math.sin(angle)*-1+self.player_pos.y)
         for woll_num in range(len(woll_list)):
             can = self.intersection(woll_num,"can_move")
             if can != None:
-                self.player_pos = self.before_pos
+                self.player_pos = copy.deepcopy(self.before_pos)
                 break
-            # print(woll_num)
         return angle,self.player_pos
     def intersection(self,woll_num,mode):
-        r1_way = self.before_pos
+        if mode == "can_move":
+            r1_way = self.before_pos
+        elif mode == "vision":
+            r1_way = self.player_dir
         r1_pos = self.player_pos
         r2_way = woll_list[woll_num][1]
         r2_pos = woll_list[woll_num][0]
@@ -61,8 +66,7 @@ class Calculation:
         b1 = r1_way.y - a1*r1_way.x
         b2 = r2_way[1] - a2*r2_way[0]
         if (a2 - a1) == 0:
-            hitpos = None
-            return hitpos
+            return None
         else:
             if a1 == float('inf') or a2 == float('inf'):
                 x = r1_pos.x
@@ -70,7 +74,7 @@ class Calculation:
                 x = (b2 - b1) / (a1 - a2)
             y = a1 * x + b1
             hitpos = pygame.math.Vector2(x,y)
-            if hitpos.x > min(self.player_pos.x,self.before_pos.x) and hitpos.x < max(self.player_pos.x,self.before_pos.x) and hitpos.x > min(r2_way[0],r2_pos[0]) and hitpos.x < max(r2_pos[0],r2_way[0]):
+            if hitpos.x > min(r1_way.x,r1_pos.x) and hitpos.x < max(r1_way.x,r1_pos.x) and hitpos.x > min(r2_way[0],r2_pos[0]) and hitpos.x < max(r2_pos[0],r2_way[0]):
                 return hitpos
             else:
                 return None
