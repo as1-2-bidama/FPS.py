@@ -5,7 +5,7 @@ from root import Root
 root = Root()
 clock = pygame.time.Clock()
 run = root.run_bool
-fps = 30
+fps = 60
 
 while run == True:
     clock.tick(fps)
