@@ -13,9 +13,11 @@ class Draw:
         self.clear_text = self.font2.render("Clear!",True,(255,255,255))
         self.title_text1 = self.font2.render("[780,660]をめざせ！FPS迷路",True,(255,255,255))
         self.title_text2 = self.font2.render("Enterでスタート",True,(255,255,255))
+        self.title_text3 = self.font2.render("WASDで移動 ←→で視点操作",True,(255,255,255))
         self.clear_rect = self.clear_text.get_rect(center = (screen[0]/2,screen[1]/2))
         self.title_text1_rect = self.title_text1.get_rect(center = (screen[0]/2,screen[1]/2 - 20))
         self.title_text2_rect = self.title_text2.get_rect(center = (screen[0]/2,screen[1]/2 + 40))
+        self.title_text3_rect = self.title_text3.get_rect(center = (screen[0]/2,screen[1]/2 + 100))
     def draw_game(self,vision_woll,player_pos):
         self.time = time.time()
         time_text = self.font2.render(str(int(self.time - self.start_time)),True,(255,255,255))
@@ -39,6 +41,7 @@ class Draw:
         self.screen.fill(color_list["blue"])
         self.screen.blit(self.title_text1,self.title_text1_rect)
         self.screen.blit(self.title_text2,self.title_text2_rect)
+        self.screen.blit(self.title_text3,self.title_text3_rect)
         self.start_time = time.time()
         pygame.display.update()
     def draw_result(self):
