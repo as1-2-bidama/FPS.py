@@ -9,7 +9,7 @@ class Draw:
         pygame.display.set_caption("FPM")
         self.start_time = time.time()
         self.time = time.time()
-        self.font2 = pygame.font.Font("font/ipaexg.ttf", 60)
+        self.font2 = pygame.font.Font("font/NikkyouSans-mLKax.ttf", 60)
         self.clear_text = self.font2.render("Clear!",True,(255,255,255))
         self.title_text1 = self.font2.render("[780,660]をめざせ！FPS迷路",True,(255,255,255))
         self.title_text2 = self.font2.render("Enterでスタート",True,(255,255,255))
